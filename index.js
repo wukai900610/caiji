@@ -8,7 +8,7 @@ var connection = mysql.createConnection({
     password: '',
     database: 'test'
 });
-
+console.log(123);
 connection.connect();
 
 function myHttps(url, config) {
