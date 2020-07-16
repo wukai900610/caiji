@@ -14,6 +14,7 @@ let listData;
 var tableName = '1688_supplys';
 let pageUrl = 'https://www.alibaba.com/catalog/animal-products_cid100003006?page='+page;
 var listUrl;
+var maxPage;
 
 // lib.creditSupplyTable(connection,tableName);
 
@@ -33,10 +34,11 @@ function getDetail(detailItem) {
         supply.desc = $('.company-card-desc').html();
         // 公司图上
         var img = $('.image-box .img').css('background');
-        var start = img.indexOf('https');
-        var end = img.indexOf('")');
-        supply.img = img.substring(start,end);
-
+        if(img){
+            var start = img.indexOf('https');
+            var end = img.indexOf('")');
+            supply.img = img.substring(start,end);
+        }
         // 基本信息
         supply.baseInfo = {};
         $('.company-basicInfo tr').each(function () {
@@ -63,6 +65,7 @@ function getDetail(detailItem) {
     .then((data)=>{
         var insert_data = {
             companyName:detailItem.companyName,
+            fullCategory:detailItem.fullCategory,
             connectUrl:detailItem.connectUrl,
             baseInfo:JSON.stringify(data.baseInfo),
             img:data.img,
@@ -90,10 +93,11 @@ function getDetail(detailItem) {
 }
 
 function nightmareList() {
-    // if(page > 100) {
-    //     console.log('end');
-    //     return;
-    // };
+    if(page > maxPage) {
+        console.log('当前分类下的列表采集完毕');
+        // listNum++;
+        return;
+    };
 
     // 初始化详情数编号
     listData = [];
@@ -108,28 +112,42 @@ function nightmareList() {
     .inject('js', '../jquery.js')
 	.evaluate(() => {
         var data = [];
+        var fullCategory = [];
+        // 所在目录
+        $('.ui-breadcrumb a').each(function () {
+            fullCategory.push($(this).text());
+        });
+        // 列表最大页数
+        var maxPage = $('.ui2-pagination .next').prev().text();
+        // 列表信息
         $('.m-item').each(function () {
-            var companyName = $(this).find('.title ').text();
+            var companyName = $(this).find('.title ').text().replace(/[\n]/g,'').trim();
             var url = $(this).find('.title a').attr('href');
             var connectUrl = $(this).find('.company .cd').attr('href');
             data.push({
                 companyName:companyName,
                 url:url,
-                connectUrl:connectUrl
+                connectUrl:connectUrl,
+                fullCategory:fullCategory.join('>')
             });
         });
 
-        return data;
+        return {
+            data:data,
+            maxPage:maxPage
+        };
     })
 	// .end()
-	.then((data)=>{
-        listData = data;
-        // console.log('-----------start------------');
+	.then((res)=>{
+        listData = res.data;
+        maxPage = res.maxPage
+
+        console.log('-------------采集列表页开始,最大'+ maxPage +'当前'+ page +'-------------');
         // console.log(listData);
-        console.log(listUrl + page);
+        console.log('请求列表地址:'+listUrl + page);
         console.log(listData.length);
-        console.log(page);
-        console.log('');
+        // console.log(page);
+        console.log('-------------以下是详情页地址-------------');
         page++;
         getDetail(listData[detailNum]);
     })
