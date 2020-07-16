@@ -29,6 +29,7 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `1688_product_agriculturalWaste` (
   `id` int(10) NOT NULL,
   `title` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `supply` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `priceRange` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `minOrder` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `payments` varchar(300) COLLATE utf8mb4_unicode_ci DEFAULT NULL,

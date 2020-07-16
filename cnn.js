@@ -10,9 +10,35 @@ var connection = mysql.createConnection({
     database: 'test'
 });
 
-const nightmare = Nightmare({
-	// show: true
-})
+var page = 100;
+var detailNum;
+let listData;
+var tableName = '1688_supplys';
+let pageUrl = 'https://www.alibaba.com/catalog/animal-products_cid100003006?page='+page;
+
+function creditTable() {
+    var sql;
+    // var sql = 'NO_AUTO_VALUE_ON_ZERO;'
+    // connection.query(sql);
+    // sql = 'SET time_zone = "+00:00";'
+    // connection.query(sql);
+
+    sql = 'CREATE TABLE IF NOT EXISTS `'+tableName+'` (`id` int(10) NOT NULL,`title` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,`supply` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,`priceRange` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,`minOrder` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,`payments` varchar(300) COLLATE utf8mb4_unicode_ci DEFAULT NULL,`num` int(5) NOT NULL,`imgs` longtext COLLATE utf8mb4_unicode_ci,`videoSrc` text COLLATE utf8mb4_unicode_ci,`videoImg` text COLLATE utf8mb4_unicode_ci,`overview` text COLLATE utf8mb4_unicode_ci,`richText` longtext COLLATE utf8mb4_unicode_ci) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;'
+    connection.query(sql, function(err, result) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+    });
+    sql = 'ALTER TABLE `'+tableName+'` ADD UNIQUE KEY `id` (`id`);'
+    connection.query(sql);
+    sql = 'ALTER TABLE `'+tableName+'` MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;'
+    connection.query(sql);
+}
+
+creditTable();
+
+return false;
 
 function myHttps(url, config) {
     let options = Object.assign({
@@ -38,7 +64,7 @@ function myHttps(url, config) {
     return promise;
 }
 
-function insertData(data,tabName) {
+function insertData(data) {
     var paramsName ='';
     var values ='';
     var addSqlParams = [];
@@ -53,7 +79,7 @@ function insertData(data,tabName) {
         addSqlParams.push(data[i])
     }
     // return false;
-    var addSql = 'INSERT INTO '+tabName+'(id' + paramsName + ') VALUES(0' + values + ')'
+    var addSql = 'INSERT INTO '+tableName+'(id' + paramsName + ') VALUES(0' + values + ')'
     // console.log(addSql);
     // console.log(addSqlParams);
     // return false;
@@ -107,7 +133,6 @@ async function getDetail(detailItem) {
     });
     let richText = $('#J-rich-text-description').html();
 
-    var tableName = '1688_product_2';
     var insert_data = {
         title:title,
         supply:detailItem.companyName,
@@ -124,7 +149,7 @@ async function getDetail(detailItem) {
     // console.log(title);
     // console.log();
     if(title){
-        insertData(insert_data,tableName);
+        insertData(insert_data);
     }
     detailNum++;
 
@@ -140,20 +165,23 @@ async function getDetail(detailItem) {
     }
 }
 
-var page = 99;
-var detailNum;
-let listData;
-
 function nightmareList() {
-
-    if(page > 100) return;
+    if(page > 100) {
+        console.log('end');
+        return;
+    };
 
     // 初始化详情数编号
     listData = [];
     detailNum = 0;
 
+
+    const nightmare = Nightmare({
+    	// show: true
+    });
+
     nightmare
-	.goto('https://www.alibaba.com/catalog/agricultural-waste_cid138?page='+page)
+	.goto(pageUrl)
     // .wait(300)
     .scrollTo(5000,0)
     // .wait(300)
