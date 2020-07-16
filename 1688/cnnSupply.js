@@ -3,6 +3,7 @@ var cheerio = require('cheerio');
 var mysql = require('mysql');
 var fs = require('fs');
 var lib = require('../lib/index.js');
+var login = require('./login.js');
 
 // 创建数据表
 var connection = lib.connection();
@@ -19,7 +20,7 @@ var maxPage;
 // lib.creditSupplyTable(connection,tableName);
 
 const nightmare = Nightmare({
-    // show: true
+    show: true
 });
 
 function getDetail(detailItem) {
@@ -28,17 +29,17 @@ function getDetail(detailItem) {
 	.goto(detailItem.url)
     .scrollTo(10000,0)
     .inject('js', '../jquery.js')
+    .click('.image-box .img')
     .evaluate(() => {
         var supply = {};
         // 简介
         supply.desc = $('.company-card-desc').html();
         // 公司图上
-        var img = $('.image-box .img').css('background');
-        if(img){
-            var start = img.indexOf('https');
-            var end = img.indexOf('")');
-            supply.img = img.substring(start,end);
-        }
+        supply.imgs = [];
+        $('.bc-image-viewer .image-box .image').each(function () {
+            var img = $(this).attr('src')
+            supply.imgs.push(img);
+        });
         // 基本信息
         supply.baseInfo = {};
         $('.company-basicInfo tr').each(function () {
@@ -68,12 +69,12 @@ function getDetail(detailItem) {
             fullCategory:detailItem.fullCategory,
             connectUrl:detailItem.connectUrl,
             baseInfo:JSON.stringify(data.baseInfo),
-            img:data.img,
             otherContent:JSON.stringify(data.otherContent),
+                imgs:data.imgs.toString(),
             productsUrl:data.productsUrl.toString(),
         };
-        // console.log(insert_data);
-        // console.log();
+        console.log(insert_data.imgs);
+
         lib.insertData(connection,tableName,insert_data);
         detailNum++;
 
@@ -166,5 +167,7 @@ fs.readFile('./data/links.json', 'utf8', function(err,data) {
     var cid = tempUrl.slice(findChart+3,tempUrl.length);
     listUrl = 'https://www.alibaba.com/catalogs/corporations/'+ cid +'/'
     // console.log(cid);
-    nightmareList();
+
+    login(nightmare,nightmareList);
+    // nightmareList();
 });

@@ -1,18 +1,17 @@
-var Nightmare = require('nightmare');
-var cheerio = require('cheerio');
-var fs = require('fs');
-var lib = require('../lib/index.js');
+// var Nightmare = require('nightmare');
+// var cheerio = require('cheerio');
+// var lib = require('../lib/index.js');
 
-function login() {
-    const nightmare = Nightmare({
-        show: true
-    });
+function login(nightmare,callback) {
+    // const nightmare = Nightmare({
+    //     show: true
+    // });
 
     nightmare
 	.goto('https://passport.alibaba.com/icbu_login.htm')
     // .wait(300)
     // .wait(300)
-    .inject('js', '../jquery.js')
+    // .inject('js', '../jquery.js')
     .wait('#fm-login-id')
     .wait('#fm-login-password')
     .wait('#fm-login-submit')
@@ -26,24 +25,13 @@ function login() {
     })
 	// .end()
 	.then((data)=>{
-        listData = data;
-        // console.log('-----------start------------');
-        // console.log(listData);
-        // console.log(listData.length);
-        // console.log(page);
-        // console.log('');
-        // page++;
-        // getDetail(listData[detailNum]);
-
-        // if(page<100){
-        //     page++;
-        //     setTimeout(function () {
-        //         nightmareList();
-        //     }, 30000);
-        // }
+        setTimeout(function () {
+            callback();
+        }, 5000);
     })
 	.catch(error => {
-		console.error('Search failed:', error)
+		console.error('login fail', error)
 	})
 }
-login();
+module.exports = login;
+// login();
