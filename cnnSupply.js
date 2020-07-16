@@ -13,12 +13,12 @@ var connection = mysql.createConnection({
 var page = 100;
 var detailNum;
 let listData;
-var tableName = '1688_products';
+var tableName = '1688_supplys';
 let pageUrl = 'https://www.alibaba.com/catalog/animal-products_cid100003006?page='+page;
 
 function creditTable() {
     var sql;
-    // var sql = 'NO_AUTO_VALUE_ON_ZERO;'
+    // sql = 'NO_AUTO_VALUE_ON_ZERO;'
     // connection.query(sql);
     // sql = 'SET time_zone = "+00:00";'
     // connection.query(sql);
