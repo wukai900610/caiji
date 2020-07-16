@@ -10,11 +10,9 @@ var connection = mysql.createConnection({
     database: 'test'
 });
 
-
 const nightmare = Nightmare({
 	// show: true
 })
-
 
 function myHttps(url, config) {
     let options = Object.assign({
@@ -142,17 +140,20 @@ async function getDetail(detailItem) {
     }
 }
 
-var page = 1;
+var page = 99;
 var detailNum;
 let listData;
 
 function nightmareList() {
+
+    if(page > 100) return;
+
     // 初始化详情数编号
     listData = [];
     detailNum = 0;
 
     nightmare
-	.goto('https://www.alibaba.com/catalog/animal-products_cid100003006?page='+page)
+	.goto('https://www.alibaba.com/catalog/agricultural-waste_cid138?page='+page)
     // .wait(300)
     .scrollTo(5000,0)
     // .wait(300)
