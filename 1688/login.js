@@ -4,15 +4,21 @@ var fs = require('fs');
 var lib = require('../lib/index.js');
 
 function login() {
+    const nightmare = Nightmare({
+        show: true
+    });
+
     nightmare
 	.goto('https://passport.alibaba.com/icbu_login.htm')
     // .wait(300)
     // .wait(300)
     .inject('js', '../jquery.js')
-    .wait('.login-content')
+    .wait('#fm-login-id')
+    .wait('#fm-login-password')
+    .wait('#fm-login-submit')
     .type('#fm-login-id', '2853706505@qq.com')
     .type('#fm-login-password', 'uaec!@#124')
-    .click('.pw-loginBtn')
+    .click('#fm-login-submit')
 	.evaluate(() => {
         var data = [];
 
@@ -27,7 +33,7 @@ function login() {
         // console.log(page);
         // console.log('');
         // page++;
-        getDetail(listData[detailNum]);
+        // getDetail(listData[detailNum]);
 
         // if(page<100){
         //     page++;
