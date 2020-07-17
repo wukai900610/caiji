@@ -27,10 +27,8 @@ function nextDetail() {
     detailNum++;
     let nextItem = listData[detailNum];
     if(nextItem && nextItem.url){
-        setTimeout(function () {
             // 请求下一条数据
             getDetail(nextItem)
-        }, 150);
     }else{
         setTimeout(function () {
             // 请求新列表
