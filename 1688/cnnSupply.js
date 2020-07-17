@@ -5,25 +5,23 @@ var fs = require('fs');
 var lib = require('../lib/index.js');
 var login = require('./login.js');
 
-// 创建数据表
-var connection = lib.connection();
-
-var listNum = 0;//所有分类的位置
-var page = 1;//当前分类的页数
+var ALL_CATEGORY_LIST_DATA;//所有分类商家列表
+var listNum = 8;//所有分类的位置
+var page = 4;//当前分类的页数
 var detailNum;//当前公司在列表的位置
-let listData;
-var tableName = '1688_supplys'+listNum;
-let pageUrl = 'https://www.alibaba.com/catalog/animal-products_cid100003006?page='+page;
+var listData;
+var tableName;
 var listUrl;
 var maxPage;
 
-// lib.creditSupplyTable(connection,tableName);
+// 创建数据表
+var connection = lib.connection();
 
 const nightmare = Nightmare({
     // show: true
 });
 
-// 下一详情页
+// 采集下一页的商家详情
 function nextDetail() {
     console.log('采集下一页');
     detailNum++;
@@ -41,6 +39,7 @@ function nextDetail() {
     }
 }
 
+// 获取当前商家的联系详情
 function connectInfo(connectUrl,insertData) {
     nightmare
 	.goto(connectUrl)
@@ -80,6 +79,7 @@ function connectInfo(connectUrl,insertData) {
 	})
 }
 
+// 获取当前商家的详情
 function getDetail(detailItem) {
     console.log(detailItem.url);
     nightmare
@@ -164,10 +164,13 @@ function getDetail(detailItem) {
 	})
 }
 
+// 遍历当前分类商家下的所有列表
 function nightmareList() {
     if(page > maxPage) {
         console.log('当前分类下的列表采集完毕,the end...');
-        // listNum++;
+        listNum++;
+        page=0;
+        lib.eventEmitter.emit('do_spider');
         return;
     };
 
@@ -228,17 +231,25 @@ function nightmareList() {
 	})
 }
 
-// 开始
-fs.readFile('./data/links.json', 'utf8', function(err,data) {
-    var adata = JSON.parse(data);
-    var tempUrl = adata[listNum];
-    var findChart = tempUrl.indexOf('sid')
+// 获取新的分类商家列表url
+lib.eventListener.on('do_spider', function() {
+    tableName = '1688_supplys'+listNum;
+    lib.creditSupplyTable(connection,tableName);
+
+    var tempUrl = ALL_CATEGORY_LIST_DATA[listNum];
+    var findChart = tempUrl.indexOf('sid');
     // console.log(tempUrl);
     // console.log(findChart);
     var cid = tempUrl.slice(findChart+3,tempUrl.length);
-    listUrl = 'https://www.alibaba.com/catalogs/corporations/'+ cid +'/'
     // console.log(cid);
+    listUrl = 'https://www.alibaba.com/catalogs/corporations/'+ cid +'/'
 
+    // 尝试重新登录
     login(nightmare,nightmareList);
     // nightmareList();
+});
+// 开始
+fs.readFile('./data/links.json', 'utf8', function(err,data) {
+    ALL_CATEGORY_LIST_DATA = JSON.parse(data);
+    lib.eventEmitter.emit('do_spider');
 });
