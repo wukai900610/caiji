@@ -171,7 +171,7 @@ function nightmareList() {
         console.log('');
         console.log('');
         listNum++;
-        page=0;
+        page=1;
         lib.eventEmitter.emit('do_spider');
         return;
     };
