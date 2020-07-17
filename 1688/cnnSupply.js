@@ -12,7 +12,7 @@ var listNum = 0;//所有分类的位置
 var page = 1;//当前分类的页数
 var detailNum;//当前公司在列表的位置
 let listData;
-var tableName = '1688_supplys';
+var tableName = '1688_supplys'+listNum;
 let pageUrl = 'https://www.alibaba.com/catalog/animal-products_cid100003006?page='+page;
 var listUrl;
 var maxPage;
@@ -32,7 +32,7 @@ function nextDetail() {
         setTimeout(function () {
             // 请求下一条数据
             getDetail(nextItem)
-        }, 300);
+        }, 150);
     }else{
         setTimeout(function () {
             // 请求新列表
@@ -51,10 +51,17 @@ function connectInfo(connectUrl,insertData) {
     .click('.sens-mask .icbu-link-default')
     .wait(100)
 	.evaluate(() => {
+        // 联系信息
         var connectData = {};
         $('.info-table tr').each(function () {
-            var key = $(this).find('th').text();
-            var value = $(this).find('td').text();
+            var key = $(this).find('th').text().trim();
+            var value = $(this).find('td').text().trim();
+            connectData[key] = value;
+        });
+        // 公司联系信息
+        $('.contact-table .info-item').each(function () {
+            var key = $(this).find('.item-title').text().trim();
+            var value = $(this).find('item-value').text().trim();
             connectData[key] = value;
         });
         return connectData;
