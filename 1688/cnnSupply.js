@@ -20,8 +20,58 @@ var maxPage;
 // lib.creditSupplyTable(connection,tableName);
 
 const nightmare = Nightmare({
-    show: true
+    // show: true
 });
+
+// 下一详情页
+function nextDetail() {
+    console.log('采集下一页');
+    detailNum++;
+    let nextItem = listData[detailNum];
+    if(nextItem && nextItem.url){
+        setTimeout(function () {
+            // 请求下一条数据
+            getDetail(nextItem)
+        }, 300);
+    }else{
+        setTimeout(function () {
+            // 请求新列表
+            nightmareList();
+        }, 2000);
+    }
+}
+
+function connectInfo(connectUrl,insertData) {
+    nightmare
+	.goto(connectUrl)
+    // .wait(300)
+    // .wait(300)
+    .inject('js', '../jquery.js')
+    // .wait('.sens-mask .icbu-link-default')
+    .click('.sens-mask .icbu-link-default')
+    .wait(100)
+	.evaluate(() => {
+        var connectData = {};
+        $('.info-table tr').each(function () {
+            var key = $(this).find('th').text();
+            var value = $(this).find('td').text();
+            connectData[key] = value;
+        });
+        return connectData;
+    })
+	// .end()
+	.then((data)=>{
+        // console.log(data);
+        insertData.connectInfo = JSON.stringify(data);
+        lib.insertData(connection,tableName,insertData);
+
+        nextDetail();
+    })
+	.catch(error => {
+        console.error('connectInfo出错', error);
+        nextDetail();
+	})
+}
 
 function getDetail(detailItem) {
     console.log(detailItem.url);
@@ -67,35 +117,39 @@ function getDetail(detailItem) {
         var insert_data = {
             companyName:detailItem.companyName,
             fullCategory:detailItem.fullCategory,
-            connectUrl:detailItem.connectUrl,
             baseInfo:JSON.stringify(data.baseInfo),
             otherContent:JSON.stringify(data.otherContent),
-                imgs:data.imgs.toString(),
+            imgs:data.imgs.toString(),
             productsUrl:data.productsUrl.toString(),
         };
-        console.log(insert_data.imgs);
+        // 抓取联系信息
+        connectInfo(detailItem.connectUrl,insert_data)
+        // lib.insertData(connection,tableName,insert_data);
 
-        lib.insertData(connection,tableName,insert_data);
-        detailNum++;
+        // detailNum++;
 
-        let nextItem = listData[detailNum];
-        if(nextItem && nextItem.url){
-            setTimeout(function () {
-                // 请求下一条数据
-                getDetail(nextItem)
-            }, 300);
-        }else{
-            setTimeout(function () {
-                // 请求新列表
-                nightmareList();
-            }, 2000);
-        }
+        // let nextItem = listData[detailNum];
+        // if(nextItem && nextItem.url){
+        //     setTimeout(function () {
+        //         // 请求下一条数据
+        //         // getDetail(nextItem)
+        //     }, 300);
+        // }else{
+        //     setTimeout(function () {
+        //         // 请求新列表
+        //         nightmareList();
+        //     }, 2000);
+        // }
     })
+    .catch(error => {
+        console.error('getDetail出错', error)
+        nextDetail();
+	})
 }
 
 function nightmareList() {
     if(page > maxPage) {
-        console.log('当前分类下的列表采集完毕');
+        console.log('当前分类下的列表采集完毕,the end...');
         // listNum++;
         return;
     };
@@ -143,17 +197,17 @@ function nightmareList() {
         listData = res.data;
         maxPage = res.maxPage
 
-        console.log('-------------采集列表页开始,最大'+ maxPage +'当前'+ page +'-------------');
+        console.log('→→→→→→→→→→→→采集列表页开始,最大'+ maxPage +'当前'+ page +'←←←←←←←←←←←←');
         // console.log(listData);
         console.log('请求列表地址:'+listUrl + page);
         console.log(listData.length);
         // console.log(page);
-        console.log('-------------以下是详情页地址-------------');
+        console.log('↓↓↓↓↓↓↓↓↓↓↓↓以下是详情页地址↓↓↓↓↓↓↓↓↓↓↓↓');
         page++;
         getDetail(listData[detailNum]);
     })
 	.catch(error => {
-		console.error('Search failed:', error)
+        console.error('nightmareList', error)
 	})
 }
 
