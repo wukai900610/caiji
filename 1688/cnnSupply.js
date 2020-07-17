@@ -79,8 +79,16 @@ function getDetail(detailItem) {
 	.goto(detailItem.url)
     .scrollTo(10000,0)
     .inject('js', '../jquery.js')
-    .click('.image-box .img')
-    .evaluate(() => {
+    .exists(".image-box .img")
+    .then(function (result) {
+        if (result) {
+            return nightmare.click('.image-box .img')
+        } else {
+            console.log("公司图片不存在 image-box .img")
+        }
+    })
+    .then(()=>{
+        return nightmare.evaluate(() => {
         var supply = {};
         // 简介
         supply.desc = $('.company-card-desc').html();
@@ -113,6 +121,7 @@ function getDetail(detailItem) {
 
         return supply;
     })
+    })
     .then((data)=>{
         var insert_data = {
             companyName:detailItem.companyName,
@@ -124,6 +133,7 @@ function getDetail(detailItem) {
         };
         // 抓取联系信息
         connectInfo(detailItem.connectUrl,insert_data)
+
         // lib.insertData(connection,tableName,insert_data);
 
         // detailNum++;
