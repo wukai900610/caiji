@@ -6,6 +6,7 @@ function login(nightmare,callback) {
     // const nightmare = Nightmare({
     //     show: true
     // });
+    console.log('登录中...');
 
     nightmare
 	.goto('https://passport.alibaba.com/icbu_login.htm')

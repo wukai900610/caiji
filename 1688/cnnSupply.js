@@ -168,6 +168,10 @@ function getDetail(detailItem) {
 function nightmareList() {
     if(page > maxPage) {
         console.log('当前分类下的列表采集完毕,the end...');
+        console.log('');
+        console.log('');
+        console.log('');
+        console.log('');
         listNum++;
         page=0;
         lib.eventEmitter.emit('do_spider');
