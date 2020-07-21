@@ -171,7 +171,7 @@ function nightmareList() {
         console.log('');
         console.log('');
         listNum++;
-        page=0;
+        page=1;
         lib.eventEmitter.emit('do_spider');
         return;
     };
@@ -217,16 +217,28 @@ function nightmareList() {
 	// .end()
 	.then((res)=>{
         listData = res.data;
-        maxPage = res.maxPage
+        maxPage = res.maxPage||1;
 
-        console.log('→→→→→→→→→→→→采集列表页开始,最大'+ maxPage +'当前'+ page +'←←←←←←←←←←←←');
+        console.log('');
+        console.log('');
+        console.log('');
+        console.log('当前第'+listNum+'个分类');
+        console.log('→→→→→→→→→→→→采集列表页开始,最大'+ maxPage +',当前'+ page +'←←←←←←←←←←←←');
         // console.log(listData);
         console.log('请求列表地址:'+listUrl + page);
-        console.log(listData.length);
+        console.error('本页列表数量:'+listData.length);
         // console.log(page);
         console.log('↓↓↓↓↓↓↓↓↓↓↓↓以下是详情页地址↓↓↓↓↓↓↓↓↓↓↓↓');
         page++;
+        // console.log(listData);
+        if(listData.length > 0){
         getDetail(listData[detailNum]);
+        }else{
+            // 列表无数据 采集下一分类
+            listNum++;
+            page=1;
+            lib.eventEmitter.emit('do_spider');
+        }
     })
 	.catch(error => {
         console.error('nightmareList', error)
@@ -234,7 +246,7 @@ function nightmareList() {
 }
 
 // 获取新的分类商家列表url
-lib.eventListener.on('do_spider', function() {
+lib.eventListener.on('do_spider', function(data) {
     tableName = '1688_supplys'+listNum;
     lib.creditSupplyTable(connection,tableName);
 
@@ -246,12 +258,15 @@ lib.eventListener.on('do_spider', function() {
     // console.log(cid);
     listUrl = 'https://www.alibaba.com/catalogs/corporations/'+ cid +'/'
 
-    // 尝试重新登录
+    if(data == 'init'){
+        // 登录
     login(nightmare,nightmareList);
-    // nightmareList();
+    }else{
+        nightmareList();
+    }
 });
 // 开始
 fs.readFile('./data/links.json', 'utf8', function(err,data) {
     ALL_CATEGORY_LIST_DATA = JSON.parse(data);
-    lib.eventEmitter.emit('do_spider');
+    lib.eventEmitter.emit('do_spider','init');
 });
