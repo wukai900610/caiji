@@ -267,6 +267,6 @@ lib.eventListener.on('do_spider', function(data) {
 });
 // 开始
 fs.readFile('./data/links.json', 'utf8', function(err,data) {
-    ALL_CATEGORY_LIST_DATA = JSON.parse(data);
+    ALL_CATEGORY_LIST_DATA = JSON.parse(data);//5262
     lib.eventEmitter.emit('do_spider','init');
 });
