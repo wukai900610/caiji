@@ -17,6 +17,15 @@ var maxPage;
 // 创建数据表
 var connection = lib.connection();
 
+connection.on('error', function(err) {
+    console.log('db error', err);
+    if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+        connection = lib.connection();
+    } else {
+        throw err;
+    }
+});
+
 const nightmare = Nightmare({
     // show: true
 });
