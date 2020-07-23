@@ -6,8 +6,8 @@ var lib = require('../lib/index.js');
 var login = require('./login.js');
 
 var ALL_CATEGORY_LIST_DATA;//所有分类商家列表
-var listNum = 8;//所有分类的位置
-var page = 4;//当前分类的页数
+var listNum = 3300;//所有分类的位置
+var page = 1;//当前分类的页数
 var detailNum;//当前公司在列表的位置
 var listData;
 var tableName;
@@ -89,7 +89,6 @@ function connectInfo(connectUrl,insertData) {
 // 获取当前商家的详情
 function getDetail(detailItem) {
     console.log(detailItem.url);
-    console.log(lib.getTime());
     nightmare
 	.goto(detailItem.url)
     .scrollTo(10000,0)
@@ -242,7 +241,7 @@ function nightmareList() {
         page++;
         // console.log(listData);
         if(listData.length > 0){
-        getDetail(listData[detailNum]);
+            getDetail(listData[detailNum]);
         }else{
             // 列表无数据 采集下一分类
             listNum++;
@@ -270,13 +269,13 @@ lib.eventListener.on('do_spider', function(data) {
 
     if(data == 'init'){
         // 登录
-    login(nightmare,nightmareList);
+        login(nightmare,nightmareList);
     }else{
         nightmareList();
     }
 });
 // 开始
 fs.readFile('./data/links.json', 'utf8', function(err,data) {
-    ALL_CATEGORY_LIST_DATA = JSON.parse(data);//5262
+    ALL_CATEGORY_LIST_DATA = JSON.parse(data);
     lib.eventEmitter.emit('do_spider','init');
 });
