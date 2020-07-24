@@ -1,0 +1,210 @@
+{
+    "gdc": {
+        "path": "companyProfile.htm",
+        "backgroundColor": "#FFFFFF",
+        "pageType": 8,
+        "backgroundImage": {
+            "display": "none"
+        },
+        "bizId": 133374366278,
+        "siteId": 5002511001,
+        "title": "Company Profile",
+        "pageId": 5009808196,
+        "lang": "en",
+        "pageName": "default"
+    },
+    "mds": {
+        "assetsPackageName": "icbumod",
+        "assetsVersion": "0.2.0",
+        "componentId": 56125,
+        "componentType": 1,
+        "config": {
+            "PREVIEWABLE": "true",
+            "CACHE_TIME": "900",
+            "REALTIME_SAVE": "false",
+            "IS_RENDER": "false",
+            "NEED_EXECUTE_JAVA": "true",
+            "IS_MULTI_END": "true",
+            "IS_REAL_TIME": "false",
+            "EDITABLE": "false",
+            "ONLY_WIRELESS": "false"
+        },
+        "defaultImage": "//img.alicdn.com/tfs/TB1zN5XSXXXXXbUXpXXXXXXXXXX-750-376.png",
+        "isEmpty": "false",
+        "isMultiEnd": "true",
+        "moduleData": {
+            "data": {
+                "companyHasPassAssessment": {
+                    "title": "Supplier Assessment",
+                    "value": false
+                },
+                "companyTotalRevenue": {},
+                "companyMainMarket": {},
+                "quotationPerformance": {
+                    "title": "Quotation Performance",
+                    "value": 0
+                },
+                "companyName": {
+                    "authType": "av",
+                    "title": "Company Name",
+                    "value": "P.C.SUPPLIERS COMPANY LIMITED"
+                },
+                "accountIsPaidMember": true,
+                "companyEstablishedYear": {
+                    "authType": "av",
+                    "title": "Year Established",
+                    "value": 2016
+                },
+                "esiteUrls": {
+                    "value": {
+                        "companyFeedbackUrl": "/company_profile/feedback.html",
+                        "tradeHistory": "/company_profile/trade_history.html",
+                        "trustPassProfileOnsiteUrl": "/company_profile/trustpass_profile.html?certification_type=intl_onsite",
+                        "productShowcaseUrl": "/featureproductlist.html",
+                        "r_DCapacityUrl": "/company_profile/r_d_capacity.html",
+                        "tradeCapacityUrl": "/company_profile/trade_capacity.html"
+                    }
+                },
+                "assessmentSaleEmployees": {
+                    "value": ""
+                },
+                "supplierMainProducts": {
+                    "title": "Main Products",
+                    "value": ["Refined Sugar", "White Rice", "Red Lentils", "Wheat Flour", "Brown Sugar"]
+                },
+                "assessmentOwnership": {
+                    "value": ""
+                },
+                "assessmentCertCompany": {},
+                "companyAboutUsImg": {},
+                "assessmentWorkerEmployees": {
+                    "value": ""
+                },
+                "isShowFeedbackBuyerNum": {
+                    "value": false
+                },
+                "sesameReplyAvgTimeNoUnit": {
+                    "title": "Response Time",
+                    "value": "168"
+                },
+                "assessmentMajorClientNames": {},
+                "companyVideoPicturePath": {
+                    "value": ""
+                },
+                "companyCertificatesSummaryIntroduce": {
+                    "title": "Certifications",
+                    "value": {
+                        "passedNames": [],
+                        "hasPassed": false,
+                        "notPassedNames": [],
+                        "totalCount": 0
+                    }
+                },
+                "sesameReplyAvgTimeRange": {
+                    "title": "Response Time",
+                    "value": ">72h"
+                },
+                "supplierTotalAnnualSalesVolume": {},
+                "companyHasPassAV": true,
+                "sesameFirstReplyRate": {
+                    "title": "Response Rate",
+                    "value": "0.1%"
+                },
+                "companyVideoType": {},
+                "companyHasPassOnsite": false,
+                "companyDescription": {
+                    "value": ""
+                },
+                "companyNumberOfEmployees": {
+                    "title": "Total Employees",
+                    "value": "51 - 100 People"
+                },
+                "companyLocation": {
+                    "authType": "av",
+                    "title": "Country / Region",
+                    "value": "Bangkok, Thailand"
+                },
+                "companyBusinessType": {
+                    "title": "Business Type",
+                    "value": "Manufacturer"
+                },
+                "tradeIsView": {
+                    "value": false
+                },
+                "esiteSubDomain": {
+                    "value": "th1257286189qnge.trustpass.alibaba.com"
+                },
+                "companyId": {
+                    "value": 866995321
+                },
+                "companyJoinYears": {
+                    "title": "Company Join Year",
+                    "value": "4"
+                },
+                "companyVideoisBigVideo": {},
+                "companyHasPassBaseVerify": false,
+                "productCertificatesSummaryIntroduce": {
+                    "title": "Product Certifications",
+                    "value": {
+                        "passedNames": [],
+                        "hasPassed": false,
+                        "notPassedNames": [],
+                        "totalCount": 0
+                    }
+                },
+                "assessmentProductImagesFullPaths": {},
+                "companyVideoPath": {},
+                "supplierRatingReviews": {},
+                "patentsSummaryIntroduce": {
+                    "title": "Patents",
+                    "value": {
+                        "passedNames": [],
+                        "hasPassed": false,
+                        "notPassedNames": [],
+                        "totalCount": 0
+                    }
+                },
+                "trademarksSummaryIntroduce": {
+                    "title": "Trademarks",
+                    "value": {
+                        "passedNames": [],
+                        "hasPassed": false,
+                        "notPassedNames": [],
+                        "totalCount": 0
+                    }
+                }
+            },
+            "definition": {
+                "title": "cp companyOverview",
+                "gridWidth": 960
+            },
+            "config": {},
+            "i18n": {
+                "transLevel": "Transaction level",
+                "gsSignVerify": "by {0}",
+                "clickToView": "Click to view company video.",
+                "showSuppliers": "Show suppliers that have been verified by Alibaba.com staff or third-party inspectors",
+                "hidden": "Hidden",
+                "score2": "Unsatisfied",
+                "score3": "Acceptable",
+                "score4": "Satisfied",
+                "score5": "Very satisfied",
+                "verifyTip": "This seller is assessed, certified, authenticated and/or inspected by {0}",
+                "assessedByOne": "Assessed by one of our third party inspection companies. Click logo to download Assessment Report.",
+                "companyBusinessType": "Business Type",
+                "theSupplierCompany": "The supplier's company premises has been checked by Alibaba.com staff to ensure onsite operations exist there. A third-party verification company has confirmed the legal status of the supplier. Click for details.",
+                "_ns_": "shopModule.cpCompanyOverview",
+                "companyPhotos": "Company video and photos",
+                "score1": "Very unsatisfied",
+                "trans": "Transactions",
+                "verifyTitle": "Verified by {0}"
+            }
+        },
+        "moduleName": "cpCompanyOverview",
+        "moduleNameAlias": "icbu-pc-cpCompanyOverview",
+        "moduleTitle": "公司信息概览",
+        "moduleType": "component",
+        "ownerType": 5,
+        "widgetId": "5043743447"
+    }
+}
