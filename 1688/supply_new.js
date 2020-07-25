@@ -51,6 +51,7 @@ lib.eventListener.on('do_spider', function(data) {
     // }
 });
 
+// 列表
 async function getList() {
     var url = listUrl+config.page;
     console.log('1.列表url:'+url);
@@ -72,6 +73,7 @@ async function getList() {
     var promiseArr = [];
     console.log('3.本页最大数量:'+$('.m-item').length);
     $('.m-item').each(function (index) {
+        var supplyName = $(this).find('.title a').text().trim();
         var href = $(this).find('.title a').attr('href').replace('http','https');
         var connectUrl = $(this).find('.company .cd').attr('href').replace('http','https');
 
@@ -81,11 +83,12 @@ async function getList() {
                     var params = {
                         index:index,
                         fullCategory:fullCategory.join('>'),
+                        supplyName:supplyName,
                         href:href,
                         connectUrl:connectUrl,
                     };
                     getDetail(params,resolve,reject);
-                }, 100*index);
+                }, 200*index);
             });
             promiseArr.push(promiseFun);
         // }
@@ -108,30 +111,46 @@ async function getList() {
         }else{
             setTimeout(function () {
                 getList();
-            }, 1000);
+            }, 2500);
         }
     }).catch((e)=>{
         console.log(e);
     });
 }
 
+// 内容
 async function getDetail(obj,resolve,reject) {
     var result = await lib.myHttps(obj.href);
     var $ = cheerio.load(result);
     // console.log('');
     // console.log(obj.href + ' ' + obj.index);
-    // console.log('请求内容'+obj.index+'成功');
+    // console.log('请求内容url'+obj.index+'成功');
     // console.log('');
     var supply = {};
-    supply.supplyName = $('.title-text').text();
+    supply.supplyName = obj.supplyName;
 
+    // var data;
+    // var d;
+    // try {
+    //     data = decodeURIComponent($('[module-title=cpCompanyOverview]').attr('module-data'));
+    //     d = JSON.parse(data);
+    // } catch (e) {
+    //     console.log(e);
+    //     console.log(data);
+    //
+    //     console.log('失败' + obj.href + ' ' + obj.index);
+    //     console.log('');
+    // } finally {
+    //
+    // }
+    var data = decodeURIComponent($('[module-title=cpCompanyOverview]').attr('module-data'));
     // 失败方式1
-    if(!supply.supplyName){
-        resolve('第'+obj.index + '条读取页面信息失败');
+    if(data == 'undefined'){
+        // console.log('失败' + obj.href + ' ' + obj.index);
+        // console.log('');
+        resolve('第'+obj.index + '条读取页面信息失败：' + obj.href);
         return false;
     }
-
-    var data = decodeURIComponent($('[module-title=cpCompanyOverview]').attr('module-data'));
     var d = JSON.parse(data);
     // console.log(d.mds.moduleData);
     // fs.writeFile('./d.json', JSON.stringify(d), function(err) {
