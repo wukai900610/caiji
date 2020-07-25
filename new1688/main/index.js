@@ -117,6 +117,7 @@ async function getList() {
         if(start>0 && end>0){
             var tempUrl = href.substring(start+8,end);
             href = 'https://'+tempUrl+'.fm.alibaba.com/company_profile.html#top-nav-bar'
+            connectUrl = 'https://'+tempUrl+'.fm.alibaba.com/contactinfo.html'
         }
 
         // if(index == 0){
