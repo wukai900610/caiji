@@ -11,9 +11,11 @@ function loop() {
     forked.send({ msg: '开始子进程' });
 
     forked.on('close', function (code) {
-      console.log('子进程已退出，退出码 ' + code);
+      console.log('子进程已退出，3秒后重启，退出码 ' + code);
 
-      loop();
+      setTimeout(function () {
+          loop();
+      }, 3000);
     });
 }
 loop();
