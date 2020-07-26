@@ -11,6 +11,9 @@ var config = {
 };
 
 // 1.开始
+process.on('message', (msg) => {
+  console.log(msg);
+});
 fs.readFile('../../1688/data/links.json', 'utf8', function(err,data) {
     ALL_CATEGORY_LIST_DATA = JSON.parse(data);//5262
 
@@ -24,7 +27,7 @@ fs.readFile('../../1688/data/links.json', 'utf8', function(err,data) {
             // console.log(data2);
             if(data2 != '' || data2 != undefined){
                 config = JSON.parse(data2);
-                // fs.unlinkSync('./config.json');
+                fs.unlinkSync('./config.json');
                 lib.eventEmitter.emit('do_spider','init');
             }
         }
@@ -111,40 +114,55 @@ async function getList() {
         var href = $(this).find('.title a').attr('href').replace('http','https');
         var connectUrl = $(this).find('.company .cd').attr('href').replace('http','https');
 
+
+
         // 重写url
         var start = href.indexOf('/member');
         var end = href.indexOf('/company_profile');
+        var errUrl = false;
         if(start>0 && end>0){
             var tempUrl = href.substring(start+8,end);
-            href = 'https://'+tempUrl+'.fm.alibaba.com/company_profile.html#top-nav-bar'
-            connectUrl = 'https://'+tempUrl+'.fm.alibaba.com/contactinfo.html'
+            // console.log(tempUrl);
+            // 有些链接无法获取
+            if(tempUrl){
+                href = 'https://'+tempUrl+'.fm.alibaba.com/company_profile.html#top-nav-bar'
+                connectUrl = 'https://'+tempUrl+'.fm.alibaba.com/contactinfo.html'
+            }else{
+                // console.log(index);
+                // console.log(href);
+                errUrl = true;
+            }
         }
 
         // if(index == 0){
-            var promiseFun = new Promise((resolve, reject) => {
-                // var params = {
-                //     index:index,
-                //     fullCategory:fullCategory.join('>'),
-                //     supplyName:supplyName,
-                //     href:href,
-                //     connectUrl:connectUrl,
-                // };
-                // getDetail(params,resolve,reject);
-                setTimeout(function () {
-                    var params = {
-                        index:index,
-                        fullCategory:fullCategory.join('>'),
-                        supplyName:supplyName,
-                        href:href,
-                        connectUrl:connectUrl,
-                    };
-                    getDetail(params,resolve,reject);
-                }, 200*index);
-            });
-            promiseArr.push(promiseFun);
+            if(!errUrl){
+                var promiseFun = new Promise((resolve, reject) => {
+                    // var params = {
+                    //     index:index,
+                    //     fullCategory:fullCategory.join('>'),
+                    //     supplyName:supplyName,
+                    //     href:href,
+                    //     connectUrl:connectUrl,
+                    // };
+                    // getDetail(params,resolve,reject);
+                    setTimeout(function () {
+                        var params = {
+                            index:index,
+                            fullCategory:fullCategory.join('>'),
+                            supplyName:supplyName,
+                            href:href,
+                            connectUrl:connectUrl,
+                        };
+                        getDetail(params,resolve,reject);
+                    }, 200*index);
+                });
+                promiseArr.push(promiseFun);
+            }
         // }
     });
 
+    // console.log(promiseArr.length);
+    // return false;
     Promise.all(promiseArr).then((values) => {
         console.log(values);
         console.log('');
@@ -179,32 +197,18 @@ async function getDetail(obj,resolve,reject) {
     // console.log('请求内容url'+obj.index+'成功');
     // console.log('');
 
-    var supply = {};
-    supply.supplyName = obj.supplyName;
-
-    // 检测页面是否被屏蔽
-    var Ouch = $('.error-copy h1').text();
-    if(Ouch == 'Ouch...'){
-        console.log('错误1');
-        endProgram();
-        return false;
-    }
-
     try {
-        // var data;
-        // var d;
-        // try {
-        //     data = decodeURIComponent($('[module-title=cpCompanyOverview]').attr('module-data'));
-        //     d = JSON.parse(data);
-        // } catch (e) {
-        //     console.log(e);
-        //     console.log(data);
-        //
-        //     console.log('失败' + obj.href + ' ' + obj.index);
-        //     console.log('');
-        // } finally {
-        //
-        // }
+        var supply = {};
+        supply.supplyName = obj.supplyName;
+
+        // 检测页面是否被屏蔽
+        var Ouch = $('.error-copy h1').text();
+        if(Ouch == 'Ouch...'){
+            console.log('错误1');
+            endProgram();
+            return false;
+        }
+
         var data = decodeURIComponent($('[module-title=cpCompanyOverview]').attr('module-data'));
         // 失败方式1
         if(data == 'undefined'){
@@ -278,11 +282,14 @@ async function getDetail(obj,resolve,reject) {
         result1 = JSON.parse(result1);
         var products = JSON.parse(result1.data[moduleIds].data);
         supply.products_list = [];
-        for(var i=0;i<products.data.productList.length;i++){
-            var item = products.data.productList[i];
-            supply.products_list.push(item.url);
+        if(result1.data){
+            var products = JSON.parse(result1.data[moduleIds].data);
+            for(var i=0;i<products.data.productList.length;i++){
+                var item = products.data.productList[i];
+                supply.products_list.push(item.url);
+            }
+            // console.log(products.urls);
         }
-        // console.log(products.urls);
 
         // 4.联系信息
         var result2 = await lib.myHttps(obj.connectUrl);
@@ -321,17 +328,16 @@ async function getDetail(obj,resolve,reject) {
             connectInfo:JSON.stringify(result3.contactInfo),
         };
         // console.log(insertData);
-
         lib.insertData(connection,config.tableName,insertData);
-
         resolve('数据'+obj.index+' ok');
+
         // console.log(d1);
         // fs.writeFile('./d1.json', JSON.stringify(d1), function(err) {
         //     if (err) console.log(err);
         //     else console.log('写文件操作成功');
         // });
     } catch (e) {
-        console.log('错误2');
+        console.log('错误类型2，第'+obj.index);
         console.log(e);
         endProgram();
     }
