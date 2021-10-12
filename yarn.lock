@@ -337,20 +337,21 @@ electron-download@^3.0.1:
     semver "^5.3.0"
     sumchecker "^1.2.0"
 
+electron@^11.5.0:
+  version "11.5.0"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-11.5.0.tgz#f1650543b9d8f2047d3807755bdb120153ed210f"
+  integrity sha512-WjNDd6lGpxyiNjE3LhnFCAk/D9GIj1rU3GSDealVShhkkkPR3Vh4q8ErXGDl1OAO/faomVa10KoFPUN/pLbNxg==
+  dependencies:
+    "@electron/get" "^1.0.1"
+    "@types/node" "^12.0.12"
+    extract-zip "^1.0.3"
+
 electron@^2.0.18:
   version "2.0.18"
   resolved "https://registry.npm.taobao.org/electron/download/electron-2.0.18.tgz#52f1b248c3cc013b5a870094de3b6ba5de313a0f"
   dependencies:
     "@types/node" "^8.0.24"
     electron-download "^3.0.1"
-    extract-zip "^1.0.3"
-
-electron@^9.1.0:
-  version "9.1.0"
-  resolved "https://registry.npm.taobao.org/electron/download/electron-9.1.0.tgz#ca77600c9e4cd591298c340e013384114d3d8d05"
-  dependencies:
-    "@electron/get" "^1.0.1"
-    "@types/node" "^12.0.12"
     extract-zip "^1.0.3"
 
 encodeurl@^1.0.2:
@@ -811,6 +812,11 @@ mkdirp@^0.5.1, mkdirp@^0.5.4:
   resolved "https://registry.npm.taobao.org/mkdirp/download/mkdirp-0.5.5.tgz#d91cefd62d1436ca0f41620e251288d420099def"
   dependencies:
     minimist "^1.2.5"
+
+moment@^2.27.0:
+  version "2.29.1"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
+  integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
 ms@2.0.0:
   version "2.0.0"
